@@ -1,3 +1,5 @@
+from librerias import *
+
 # definir los barcos : 
 barcos = {
     "barco_1_eslora" : 4,

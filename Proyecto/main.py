@@ -1,43 +1,31 @@
-import sys
-import os
-import random
-import numpy as np
+# DEFINICION DE LIBRERIAS
+from librerias import *
 
-def reglas():
-    print("Estas son las reglas")
+# DEFINICION DE FUNCIONES
+from funciones import *
 
-def iniciar_juego():
-    print("Aqui veremos el juego")
+def main():
+    while True:
 
-def limpiar_pantalla():
-    if os.name == "posix":
-        os.system("clear")
-    elif os.name == "nt":
-        os.system("cls")
+        print("1. Reglas del juego \n")
+        print("2. Iniciar el juego \n")
+        print("3. Salir \n")
 
-def salir():
-    print("Hasta luego")
-    sys.exit()
+        opcion = input("Selecciona una opción: ")
 
+        if opcion == "1":
+            reglas()
 
-while True:
-    
-    print("1. Reglas del juego \n")
-    print("2. Iniciar el juego \n")
-    print("3. Salir \n")
+        elif opcion == "2":
+            iniciar_juego()
 
-    opcion = input("Selecciona una opción: ")
+        elif opcion == "3":
+            salir()
 
-    if opcion == "1":
-        reglas()
-    
-    elif opcion == "2":
-        iniciar_juego()
+        else:
+            print("La opción seleccionada no existe. Presione Enter para continuar.")
+            input()
+            limpiar_pantalla()
 
-    elif opcion == "3":
-        salir()
-
-    else:
-        print("La opción seleccionada no existe. Presione Enter para continuar.")
-        input()
-        limpiar_pantalla()
+if __name__ == "__main__":
+    main()
