@@ -12,7 +12,7 @@ barcos = {
 
 #dimensiones del tablero 10x10
 
-dimensiones_tablero = np.array([10, 10])
+dimension_tablero = np.array([10, 10])
 
 
 # simbolos para el tablero :
