@@ -18,7 +18,6 @@ def salir():
 
 
 #funcion para atacar 
-import random
 
 def atacar(tablero_oponente, fila, columna, coordenadas_atacadas):
     # Validar las coordenadas
