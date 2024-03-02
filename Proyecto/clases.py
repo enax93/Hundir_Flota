@@ -43,11 +43,11 @@ class TableroFlota():
         return True
     
     def imprimir_tablero(self):
-    print("Tablero de", self.jugador)
-    for i in range(self.dimension):
-        for j in range(self.dimension):
-            if self.tablero[i][j] == 1:
-                print("O", end=" ")
-            else:
-                print("~", end=" ")
-        print(" ", i)
+        print("Tablero de", self.jugador)
+        for i in range(self.dimension):
+            for j in range(self.dimension):
+                if self.tablero[i][j] == 1:
+                    print("O", end=" ")
+                else:
+                    print("~", end=" ")
+            print(" ", i)
