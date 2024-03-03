@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import random
+import os
+import time
+
 
 barcos = {
     "barco_1_eslora" : 4,
@@ -9,15 +12,14 @@ barcos = {
     "barco_4_eslora" : 1,
 }
 
-## Esta funcion de crear tablero sobra lo indico como variables ##
-#def crear_tablero(filas, columnas):
- #   return np.full((filas, columnas), "", dtype=str)
 
-# Inicio los tableros como variables porque me parece mas sencillos para llamarlos luego
 
-tablero_jug_1 = np.full((10, 10), " ", dtype=str)
-tablero_jug_2 = np.full ((10,10), " ", dtype= str)
+def crear_tablero(filas, columnas):
+    return np.full((filas, columnas), "🌊", dtype=str)
 
+def colocar_barcos(tablero, barcos):
+    for tamano_barco in barcos.values():
+        agregar_barco(tablero, tamano_barco)
 
 
 def agregar_barco(tablero, tamano_barco): # esta es la variable principal
@@ -27,7 +29,7 @@ def agregar_barco(tablero, tamano_barco): # esta es la variable principal
         columna_inicio = random.randint(0, len(tablero[0]) - 1)
         if fila_inicio - tamano_barco + 1 >= 0:
             for i in range(fila_inicio, fila_inicio - tamano_barco, -1):
-                if tablero[i][columna_inicio] != " ":
+                if tablero[i][columna_inicio] != "🌊":
                     return False
             for i in range(fila_inicio, fila_inicio - tamano_barco, -1):
                 tablero[i][columna_inicio] = "B"
@@ -70,92 +72,138 @@ tamanos_barcos = list (barcos.values()) # creamos una lista con los valores o es
 
 
 #llamamos a la funcion agregar_barco(matriz_espacios, tamanos_barcos) metiendo los parametros del diccionario
-for tamano_barco in tamanos_barcos:
-    
-    resultado = agregar_barco(tablero_jug_1, tamano_barco)
-    resultado2 = agregar_barco (tablero_jug_2, tamano_barco)
+tablero_jug_1 = crear_tablero(10, 10)
+tablero_jug_2 = crear_tablero(10, 10)
+
+colocar_barcos(tablero_jug_1, barcos)
+colocar_barcos(tablero_jug_2, barcos)
 
 
-    
-        
 
-
-print (tablero_jug_1)
-print (tablero_jug_2)
-
-"""
-AQUi TERMINA LA FUNCION COLOCAR BARCOS RANDOM 
-                Y
-AQUI EMPIEZA LA FUNCION DE ATAQUE que son varias
-
-"""
-
-
-def atacar(tablero_oponente):
+def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugador=True):
     while True:
-        fila_ataque = int(input("Ingresa la fila para el ataque (0-9): "))
-        columna_ataque = int(input("Ingresa la columna para el ataque (0-9): "))
-        
-        # Validar las coordenadas
-        if fila_ataque < 0 or fila_ataque >= len(tablero_oponente) or columna_ataque < 0 or columna_ataque >= len(tablero_oponente[0]):
-            print("Coordenadas fuera de los límites del tablero. Intenta nuevamente.")
-            continue  # Reinicia el bucle si las coordenadas son inválidas
+        try:
+            if turno_jugador:
+                if fila_ataque is None:
+                    fila_ataque = int(input("Ingresa la fila para el ataque (0-9): "))
+                if columna_ataque is None:
+                    columna_ataque = int(input("Ingresa la columna para el ataque (0-9): "))
+            else:
+                if fila_ataque is None:
+                    fila_ataque = random.randint(0, len(tablero_oponente) - 1)
+                if columna_ataque is None:
+                    columna_ataque = random.randint(0, len(tablero_oponente[0]) - 1)
+            
+            # Validar las coordenadas
+            if fila_ataque < 0 or fila_ataque >= len(tablero_oponente) or columna_ataque < 0 or columna_ataque >= len(tablero_oponente[0]):
+                print("Coordenadas fuera de los límites del tablero. Intenta nuevamente.")
+                continue  # Reinicia el bucle si las coordenadas son inválidas
 
-        coordenadas_atacadas = (fila_ataque, columna_ataque)
+            coordenadas_atacadas = (fila_ataque, columna_ataque)
 
-        if tablero_oponente[fila_ataque][columna_ataque] == "X" or tablero_oponente[fila_ataque][columna_ataque] == "O":
-            print("Ya has atacado estas coordenadas. Intenta nuevamente.")
-            continue  # Reinicia el bucle si ya se atacaron esas coordenadas
+            if tablero_oponente[fila_ataque][columna_ataque] == "X" or tablero_oponente[fila_ataque][columna_ataque] == "O":
+                print("Ya has atacado estas coordenadas. Intenta nuevamente.")
+                  # Reinicia el bucle si ya se atacaron esas coordenadas
+                fila_ataque = None
+                columna_ataque = None
+                continue
+            # Verificar si el ataque impacta en un barco del oponente
+            if tablero_oponente[fila_ataque][columna_ataque] == "B":
+                tablero_oponente[fila_ataque][columna_ataque] = 'X'  # Marcar como impactado en el tablero del oponente
+                mensaje = "¡Impacto!"
+            else:
+                tablero_oponente[fila_ataque][columna_ataque] = 'O'  # Marcar como agua en el tablero del oponente
+                mensaje = "Agua"
 
-        # Verificar si el ataque impacta en un barco del oponente
-        if tablero_oponente[fila_ataque][columna_ataque] == "B":
-            tablero_oponente[fila_ataque][columna_ataque] = 'X'  # Marcar como impactado en el tablero del oponente
-            mensaje = "¡Impacto!"
-            exito = True
-        else:
-            tablero_oponente[fila_ataque][columna_ataque] = 'O'  # Marcar como agua en el tablero del oponente
-            mensaje = "Agua"
-            exito = True
+            print(mensaje)
 
-        return mensaje, exito, coordenadas_atacadas
+            return True, coordenadas_atacadas, mensaje
+
+        except ValueError:
+            print("Por favor, ingresa un número válido.")
 
 
-
-
-def imprimir_tablero(tablero):
+def hundidos (tablero):
+    contador = 0
     for fila in tablero:
-        print(" ".join(fila))
+        for casilla in fila:
+            if casilla == "X":
+                contador += 1
+    return contador
+import os
 
+
+def imprimir_tablero(tablero, ocultar_barcos=False, mostrar_ataques=False):
+    
+    for fila_index, fila in enumerate(tablero):
+        fila_mostrar = []
+        for columna_index, casilla in enumerate(fila):
+            if ocultar_barcos and casilla == "B":
+                fila_mostrar.append(" 🌊 ")
+            elif mostrar_ataques and casilla in ["X", "O"]:
+                fila_mostrar.append(f" {casilla} ")
+            else:
+                fila_mostrar.append(" 🌊 ")  # Símbolo de mar
+
+        # Imprimir el número de fila, la fila con sus elementos y el marco lateral
+        print(f"{fila_index} |{'|'.join(map(str, fila_mostrar))}|")
+
+
+
+def ataque_maquina(tablero_oponente):
+    # Generar coordenadas aleatorias
+    fila_ataque = random.randint(0, len(tablero_oponente) - 1)
+    columna_ataque = random.randint(0, len(tablero_oponente[0]) - 1)
+
+    # Atacar utilizando la función existente
+    mensaje, _, _ = atacar(tablero_oponente, fila_ataque, columna_ataque)
+    print(f"fila de ataque  {fila_ataque} \n columna de ataque {columna_ataque}")
+    print (mensaje)
+    time.sleep(3)
 
 def juego():
-    vidas_humano = 10
-    vidas_maquina = 10
+    barcos_hundidos_humano = 0
+    barcos_hundidos_maquina = 0
+    turno = random.choice(["humano", "maquina"])
 
-    while vidas_humano > 0 and vidas_maquina > 0:
-        print("Turno del Jugador Humano:")
-        mensaje, exito, coordenadas = atacar(tablero_jug_2)
-        print(mensaje)
+    while barcos_hundidos_humano < 10 and barcos_hundidos_maquina < 10:
+        os.system("cls" if os.name == "nt" else "clear")
 
-        if exito:
-            vidas_maquina -= 1
+        if turno == "humano":
+            print("\nTablero del Jugador Humano:")
+            imprimir_tablero(tablero_jug_2, ocultar_barcos=True, mostrar_ataques=True)
 
-        print(f"Vidas restantes del Jugador Máquina: {vidas_maquina}")
+            print("\nTurno del Jugador Humano:")
+            atacar(tablero_jug_2, turno_jugador=True)
+            #imprimir_tablero(tablero_jug_2, ocultar_barcos=True)
 
-        if vidas_maquina == 0:
-            print("¡El Jugador Humano ha ganado!")
-            break
+            barcos_hundidos_maquina = hundidos(tablero_jug_2)
+            print(f"Barcos hundidos del jugador máquina: {barcos_hundidos_maquina}")
+            time.sleep (2)
 
-        print("\nTurno del Jugador Máquina:")
-        mensaje, exito, coordenadas = atacar(tablero_jug_1)
-        print(mensaje)
+            if barcos_hundidos_maquina == 10:
+                print("¡El Jugador Humano ha ganado!")
+                break
 
-        if exito:
-            vidas_humano -= 1
+            turno = "maquina"
 
-        print(f"Vidas restantes del Jugador Humano: {vidas_humano}")
+        elif turno == "maquina":
+            print("\nTablero del Jugador Máquina:")
+            imprimir_tablero(tablero_jug_1, ocultar_barcos=True)
 
-        if vidas_humano == 0:
-            print("¡El Jugador Máquina ha ganado!")
+            print("\nTurno del Jugador Máquina:")
+            ataque_maquina(tablero_jug_1)
+            imprimir_tablero(tablero_jug_1, ocultar_barcos=True, mostrar_ataques=True)
 
-# Llamada a la función juego
+            barcos_hundidos_humano = hundidos(tablero_jug_1)
+            print(f"Barcos hundidos del Jugador Máquina: {barcos_hundidos_humano}")
+            time.sleep (2)
+
+            if barcos_hundidos_humano == 10:
+                print("¡El Jugador Máquina ha ganado!")
+                break
+
+            turno = "humano"
+            time.sleep(1)
+
 juego()
