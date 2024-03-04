@@ -2,7 +2,7 @@ from librerias import *
 
 def reglas():
     print("Estas son las reglas")
-0
+
 def iniciar_juego():
     print("Aqui veremos el juego")
 
