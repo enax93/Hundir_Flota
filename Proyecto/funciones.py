@@ -112,6 +112,8 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
             # Validar las coordenadas
             if fila_ataque < 0 or fila_ataque >= len(tablero_oponente) or columna_ataque < 0 or columna_ataque >= len(tablero_oponente[0]):
                 print("Coordenadas fuera de los límites del tablero. Intenta nuevamente.")
+                fila_ataque = None
+                columna_ataque = None
                 continue  # Reinicia el bucle si las coordenadas son inválidas
 
             coordenadas_atacadas = (fila_ataque, columna_ataque)
@@ -145,8 +147,6 @@ def hundidos (tablero):
             if casilla == "X":
                 contador += 1
     return contador
-import os
-
 
 def imprimir_tablero(tablero, ocultar_barcos=False, mostrar_ataques=False):
     
