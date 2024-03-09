@@ -230,10 +230,10 @@ def limpiar_pantalla():
 
 agregar_barcos_peques(tablero_jug_1, barcos_peques)
 print(tablero_jug_1)
-time.sleep(2)
+time.sleep(5)
 limpiar_pantalla ()
 print ("Siguiente Jugador \n")
 agregar_barcos_peques(tablero_jug_2, barcos_peques)
 print (tablero_jug_2)
-time.sleep(2)
+time.sleep(5)
 juego ()
