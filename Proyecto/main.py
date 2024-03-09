@@ -16,6 +16,7 @@ def main():
         print("1. Reglas del juego \n")
         print("2. Iniciar el juego \n")
         print("3. Salir \n")
+        limpiar_pantalla ()
 
         opcion = input("Selecciona una opción: ")
 
@@ -37,3 +38,4 @@ if __name__ == "__main__":
     limpiar_pantalla()
     main()
 
+main ()

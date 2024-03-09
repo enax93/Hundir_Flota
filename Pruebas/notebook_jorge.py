@@ -1,82 +1,99 @@
-import pandas as pd
-import numpy as np
-import random
+
+import sys
 import os
+import random
+import numpy as np
 import time
-
-
-barcos = {
-    "barco_1_eslora" : 4,
-    "barco_2_eslora" : 3,
-    "barco_3_eslora" : 2,
-    "barco_4_eslora" : 1,
-}
-
-
 
 def crear_tablero(filas, columnas):
     return np.full((filas, columnas), "🌊", dtype=str)
 
-def colocar_barcos(tablero, barcos):
-    for tamano_barco in barcos.values():
-        agregar_barco(tablero, tamano_barco)
+def agregar_barcos_peques(tablero, barcos_peques):
+    for tamano_barco, cantidad in barcos_peques.items():
+        for i in range(cantidad):
+            exito = False
+            while not exito:
+                exito, posiciones_barco = agregar_barco(tablero, int(tamano_barco))
+                
+                # Si la colocación del barco fue exitosa, puedes hacer algo con las posiciones
+                if exito:
+                    print(f"Barco de tamaño {tamano_barco} agregado en posiciones: {posiciones_barco}")
+                else:
+                    print(f"No se pudo colocar el barco de tamaño {tamano_barco}. Reintentando...")
 
 
-def agregar_barco(tablero, tamano_barco): # esta es la variable principal
+# Diccionario con información de barcos pequeños
+barcos = {
+    "barcos_eslora_1": 4,
+    "barcos_pos_2": 3,
+    "barcos_pos_3": 2,
+    "barcos_pos_4": 1
+    # Otras claves y valores para el jugador 1
+}
+
+
+def agregar_barco (tablero, tamano_barco):
     direccion = random.choice(['norte', 'sur', 'este', 'oeste'])
+    posiciones_barco = []
+
     if direccion == 'norte':
         fila_inicio = random.randint(tamano_barco - 1, len(tablero) - 1)
         columna_inicio = random.randint(0, len(tablero[0]) - 1)
         if fila_inicio - tamano_barco + 1 >= 0:
             for i in range(fila_inicio, fila_inicio - tamano_barco, -1):
                 if tablero[i][columna_inicio] != "🌊":
-                    return False
+                    return False, []
+                posiciones_barco.append((i, columna_inicio))
             for i in range(fila_inicio, fila_inicio - tamano_barco, -1):
                 tablero[i][columna_inicio] = "B"
-            return True
-        
+            return True, posiciones_barco
+
     elif direccion == 'sur':
         fila_inicio = random.randint(0, len(tablero) - tamano_barco)
         columna_inicio = random.randint(0, len(tablero[0]) - 1)
         if fila_inicio + tamano_barco <= len(tablero):
             for i in range(fila_inicio, fila_inicio + tamano_barco):
-                if tablero[i][columna_inicio] != " ":
-                    return False
+                if tablero[i][columna_inicio] != "🌊":
+                    return False, []
+                posiciones_barco.append((i, columna_inicio))
             for i in range(fila_inicio, fila_inicio + tamano_barco):
                 tablero[i][columna_inicio] = "B"
-            return True
-        
+            return True, posiciones_barco
+
     elif direccion == 'este':
         fila_inicio = random.randint(0, len(tablero) - 1)
         columna_inicio = random.randint(0, len(tablero[0]) - tamano_barco)
         if columna_inicio + tamano_barco <= len(tablero[0]):
             for i in range(columna_inicio, columna_inicio + tamano_barco):
-                if tablero[fila_inicio][i] != " ":
-                    return False
+                if tablero[fila_inicio][i] != "🌊":
+                    return False, []
+                posiciones_barco.append((fila_inicio, i))
             for i in range(columna_inicio, columna_inicio + tamano_barco):
                 tablero[fila_inicio][i] = "B"
-            return True
-        
+            return True, posiciones_barco
+
     elif direccion == 'oeste':
         fila_inicio = random.randint(0, len(tablero) - 1)
         columna_inicio = random.randint(tamano_barco - 1, len(tablero[0]) - 1)
         if columna_inicio - tamano_barco + 1 >= 0:
             for i in range(columna_inicio, columna_inicio - tamano_barco, -1):
-                if tablero[fila_inicio][i] != " ":
-                    return False
+                if tablero[fila_inicio][i] != "🌊":
+                    return False, []
+                posiciones_barco.append((fila_inicio, i))
             for i in range(columna_inicio, columna_inicio - tamano_barco, -1):
                 tablero[fila_inicio][i] = "B"
-            return True
-
-tamanos_barcos = list (barcos.values()) # creamos una lista con los valores o eslora de los barcos
+            return True, posiciones_barco
 
 
-#llamamos a la funcion agregar_barco(matriz_espacios, tamanos_barcos) metiendo los parametros del diccionario
+# Crear el tablero
 tablero_jug_1 = crear_tablero(10, 10)
-tablero_jug_2 = crear_tablero(10, 10)
+tablero_jug_2 = crear_tablero (10,10)
 
-colocar_barcos(tablero_jug_1, barcos)
-colocar_barcos(tablero_jug_2, barcos)
+# Obtener los barcos pequeños del diccionario
+barcos_peques = {k.split("_")[2]: v for k, v in barcos.items() if "pos" in k}
+
+# Agregar todos los barcos pequeños al tablero
+
 
 
 
@@ -97,6 +114,8 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
             # Validar las coordenadas
             if fila_ataque < 0 or fila_ataque >= len(tablero_oponente) or columna_ataque < 0 or columna_ataque >= len(tablero_oponente[0]):
                 print("Coordenadas fuera de los límites del tablero. Intenta nuevamente.")
+                fila_ataque = None
+                columna_ataque = None
                 continue  # Reinicia el bucle si las coordenadas son inválidas
 
             coordenadas_atacadas = (fila_ataque, columna_ataque)
@@ -130,8 +149,6 @@ def hundidos (tablero):
             if casilla == "X":
                 contador += 1
     return contador
-import os
-
 
 def imprimir_tablero(tablero, ocultar_barcos=False, mostrar_ataques=False):
     
@@ -205,5 +222,18 @@ def juego():
 
             turno = "humano"
             time.sleep(1)
+def limpiar_pantalla():
+    if os.name == 'nt':
+        os.system('cls')  # Si estás en Windows
 
-juego()
+
+
+agregar_barcos_peques(tablero_jug_1, barcos_peques)
+print(tablero_jug_1)
+time.sleep(2)
+limpiar_pantalla ()
+print ("Siguiente Jugador \n")
+agregar_barcos_peques(tablero_jug_2, barcos_peques)
+print (tablero_jug_2)
+time.sleep(2)
+juego ()
