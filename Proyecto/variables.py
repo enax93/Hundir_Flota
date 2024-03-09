@@ -12,17 +12,13 @@ barcos = {
 
 dimension_tablero = np.array([10, 10])
 
-
 # simbolos para el tablero :
 
 simbolo_agua = " "
 simbolo_barco = "B"
 simbolo_hundido = "X"
 
-
 # Jugadores
 
 jugador_humano = "Jugador"
 jugador_maquina = "Maquina"
-
-

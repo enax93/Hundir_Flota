@@ -8,7 +8,3 @@ class TableroFlota():
         self.jugador = jugador
         self.dimension = dimension_tablero
         self.barcos = barcos
-
-
-
-

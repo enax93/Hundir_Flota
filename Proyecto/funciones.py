@@ -4,6 +4,7 @@ from variables import *
 
 
 def reglas():
+    limpiar_pantalla()
     print("Reglas del Juego 'Hundir la Flota'\n")
 
     print("1. Objetivo del Juego:")
@@ -34,14 +35,11 @@ def reglas():
 
     print("8. Disfruta y dejános tus comentarios para una siguiente versión:")
 
-
-
     opcion = input("Presiona Enter para iniciar el juego o escribe 'salir' para terminarlo: ")
     if opcion.lower() == "salir":
         salir()
     limpiar_pantalla()
     iniciar_juego()
-
 
 def limpiar_pantalla():
     if os.name == "posix":
@@ -69,7 +67,6 @@ def agregar_barcos_peques(tablero, barcos_peques):
                 else:
                     print(f"No se pudo colocar el barco de tamaño {tamano_barco}. Reintentando...")
 
-
 # Diccionario con información de barcos pequeños
 barcos = {
     "barcos_pos_1": 4,
@@ -78,7 +75,6 @@ barcos = {
     "barcos_pos_4": 1
     # Otras claves y valores para el jugador 1
 }
-
 
 def agregar_barco (tablero, tamano_barco):
     direccion = random.choice(['norte', 'sur', 'este', 'oeste'])
@@ -132,7 +128,6 @@ def agregar_barco (tablero, tamano_barco):
                 tablero[fila_inicio][i] = "B"
             return True, posiciones_barco
 
-
 # Crear el tablero
 tablero_jug_1 = crear_tablero(10, 10)
 tablero_jug_2 = crear_tablero (10,10)
@@ -140,9 +135,6 @@ tablero_jug_2 = crear_tablero (10,10)
 # Obtener los barcos pequeños del diccionario
 barcos_peques = {k.split("_")[2]: v for k, v in barcos.items() if "pos" in k}
 print (barcos_peques)
-
-
-
 
 def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugador=True):
     while True:
@@ -178,6 +170,8 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
                 tablero_oponente[fila_ataque][columna_ataque] = 'X'  # Marcar como impactado en el tablero del oponente
                 mensaje = "¡Impacto!"
                 
+                print(mensaje)
+                return True, coordenadas_atacadas, mensaje
             else:
                 tablero_oponente[fila_ataque][columna_ataque] = 'O'  # Marcar como agua en el tablero del oponente
                 mensaje = "Agua"
@@ -188,8 +182,6 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
 
         except ValueError:
             print("Por favor, ingresa un número válido.")
-
-
 
 def hundidos (tablero):
     contador = 0
@@ -213,8 +205,6 @@ def imprimir_tablero(tablero, ocultar_barcos=False, mostrar_ataques=False):
 
         # Imprimir el número de fila, la fila con sus elementos y el marco lateral
         print(f"{fila_index} |{'|'.join(map(str, fila_mostrar))}|")
-
-
 
 def ataque_maquina(tablero_oponente):
     # Generar coordenadas aleatorias
@@ -243,19 +233,17 @@ def iniciar_juego():
     time.sleep(10)
     limpiar_pantalla ()
     
-
     turno = random.choice(["humano", "maquina"])
 
     while barcos_hundidos_humano < 10 and barcos_hundidos_maquina < 10:
-        os.system("cls" if os.name == "nt" else "clear")
-
+        limpiar_pantalla()
+        
         if turno == "humano":
             print("\nTablero del Jugador Humano:")
             imprimir_tablero(tablero_jug_2, ocultar_barcos=True, mostrar_ataques=True)
 
             print("\nTurno del Jugador Humano:")
             atacar(tablero_jug_2, turno_jugador=True)
-            #imprimir_tablero(tablero_jug_2, ocultar_barcos=True)
 
             barcos_hundidos_maquina = hundidos(tablero_jug_2)
             print(f"Barcos hundidos del jugador máquina: {barcos_hundidos_maquina}")
@@ -268,9 +256,7 @@ def iniciar_juego():
             turno = "maquina"
 
         elif turno == "maquina":
-            print("\nTablero del Jugador Máquina:")
-            imprimir_tablero(tablero_jug_1, ocultar_barcos=True)
-
+            
             print("\nTurno del Jugador Máquina:")
             ataque_maquina(tablero_jug_1)
             imprimir_tablero(tablero_jug_1, ocultar_barcos=True, mostrar_ataques=True)
@@ -289,4 +275,3 @@ def iniciar_juego():
         continuar_jugando = input("Presiona ENTER para seguir jugando o escribe 'salir' para rendirte: ")
         if continuar_jugando.lower() == "salir":
             salir()
-
