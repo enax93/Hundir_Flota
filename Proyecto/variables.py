@@ -8,8 +8,6 @@ barcos = {
     "barco_4_eslora" : 1,
 }
 
-#import numpy as np
-
 #dimensiones del tablero 10x10
 
 dimension_tablero = np.array([10, 10])

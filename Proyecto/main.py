@@ -4,6 +4,12 @@ from librerias import *
 # DEFINICION DE FUNCIONES
 from funciones import *
 
+# DEFINICION DE CLASES
+from clases import *
+
+# DEFINICION DE VARIABLES
+from variables import *
+
 def main():
     while True:
 
@@ -28,5 +34,6 @@ def main():
             limpiar_pantalla()
 
 if __name__ == "__main__":
+    limpiar_pantalla()
     main()
 
