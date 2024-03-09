@@ -72,7 +72,7 @@ def agregar_barcos_peques(tablero, barcos_peques):
 
 # Diccionario con información de barcos pequeños
 barcos = {
-    "barcos_eslora_1": 4,
+    "barcos_pos_1": 4,
     "barcos_pos_2": 3,
     "barcos_pos_3": 2,
     "barcos_pos_4": 1
@@ -139,8 +139,7 @@ tablero_jug_2 = crear_tablero (10,10)
 
 # Obtener los barcos pequeños del diccionario
 barcos_peques = {k.split("_")[2]: v for k, v in barcos.items() if "pos" in k}
-
-
+print (barcos_peques)
 
 
 
@@ -178,6 +177,7 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
             if tablero_oponente[fila_ataque][columna_ataque] == "B":
                 tablero_oponente[fila_ataque][columna_ataque] = 'X'  # Marcar como impactado en el tablero del oponente
                 mensaje = "¡Impacto!"
+                
             else:
                 tablero_oponente[fila_ataque][columna_ataque] = 'O'  # Marcar como agua en el tablero del oponente
                 mensaje = "Agua"
@@ -188,6 +188,7 @@ def atacar(tablero_oponente, fila_ataque=None, columna_ataque=None, turno_jugado
 
         except ValueError:
             print("Por favor, ingresa un número válido.")
+
 
 
 def hundidos (tablero):
